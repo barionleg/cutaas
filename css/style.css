@@ -1,0 +1,111 @@
+* {
+  margin: 0;
+  padding: 0;
+  line-height: 1.2em;
+  border:0;
+}
+body {
+  background-color: #000;
+  color:#ccc;
+  font-family: Arial, sans-serif;
+  margin:10px 10px;
+  width: 100%;
+}
+
+#menu {
+  width: 100%;
+  overflow:auto;
+}
+
+.menulist {
+  display: block;
+  overflow: auto;
+  margin-bottom: 6px;
+  border-bottom: 1px dotted #666;
+}
+
+#main {
+  clear: both;
+}
+
+.menuitem {
+  display: block;
+  float: left;
+  padding: 2px 20px;
+  background-color: #aaa;
+  color: #000;
+  cursor: pointer;
+  margin-right: 5px;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #666;
+  border-bottom: 1px solid #666;
+  border-radius: 4px;
+  text-shadow: 1px 1px 0px #ccc;
+  font-size: 0.8em;
+  margin-bottom: 6px;
+}
+
+.menuseparator {
+  display: block;
+  float: left;
+  width: 0px;
+  height:1em;
+  margin: 2px 5px 0 0;
+  border-left: 1px solid #666;
+  border-right: 1px solid #888;
+}
+
+.menubr {
+  clear: left;
+  display: block;
+  float: left;
+  width: 0px;
+  height: auto;
+  padding-top:10px;
+}
+
+
+.break {
+  clear: left;
+}
+
+.fleft {
+  float: left;
+}
+
+.fright {
+  float: right;
+}
+
+.block {
+  display: block;
+}
+
+.green {
+  color: #8f8;
+}
+
+.red {
+  color: #f88;
+}
+
+.blue {
+  color: #88f;
+}
+
+.fileinput {
+  position: absolute;
+  clip: rect( 0, 0, 0, 0 );
+}
+
+#consol {
+    font-family: monospace;
+    padding: 5px 2px;
+    background-color: #030;
+    color: #0b0;
+    width:80%;
+    overflow: auto;
+    min-height: 200px;
+    min-width: 800px;
+}

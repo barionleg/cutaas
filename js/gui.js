@@ -3,11 +3,11 @@ const gui = (options) => {
     const fitSize = () => {
         const cpos = $('#consol').offset();
         $('#consol')
-            .css('height', $('body').height() - cpos.top - 10)
-            .css('width', $('body').width() - 30)
+            .css('height', $('body').height() - cpos.top)
+            .css('width', $('body').width() - 25)
             .css('font-size',`${options.consoleFontSize}`);
         $('.menulist')
-            .css('width', $('body').width() - 30)
+            .css('width', $('body').width() - 25)
         //console.log(cpos);
     }
     

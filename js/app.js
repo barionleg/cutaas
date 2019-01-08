@@ -11,6 +11,7 @@ const binFile = {
 const defaultOptions = {
     version: '0.5',
     hexWidth: 40,
+    bmpWidth: 320,
     consoleFontSize: 15,
 }
 
@@ -350,6 +351,18 @@ const packRLE = () => {
     return 1;
 }
 
+const refreshOptions = () => {
+    
+}
+
+const toggleOptions = () => {
+    if ($('#options_dialog').is(':visible')) {
+        $('#options_dialog').slideUp();
+    } else {
+        $('#options_dialog').slideDown();
+    }
+}
+
 const saveUndo = (name, modifier) => {
     return () => {
         const undo = { name: name, data: binFile.data.slice() };
@@ -388,7 +401,7 @@ $(document).ready(function() {
     app.addSeparator('filemenu');
  	app.addMenuItem('pack RLE', saveUndo('RLE compression', packRLE), 'filemenu');
     app.addSeparator('filemenu');
- 	app.addMenuItem('Options', exportData, 'filemenu');
+ 	app.addMenuItem('Options', toggleOptions, 'filemenu');
 
  	app.addMenuItem('Negate', saveUndo('data negation', dataNegate));
  	app.addMenuItem('XOR', saveUndo('data XOR operation', dataXOR));

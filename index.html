@@ -15,6 +15,20 @@
       <input type='file' id='afile' class='fileinput'>
       </ul>
 	  <div id='menu'></div>
+      <div id='options_dialog' class='dialog'>
+          <div class='dialog_title'>Options</div>
+          <div class='dialog_content'>
+              <fieldset>
+                  <label class='dialog_label'>Hex view width:</label>
+                  <input type='text' id='hex_width' class='dialog_text_input input_narrow'>
+              </fieldset>
+              <fieldset>
+                  <label class='dialog_label'>Bitmap view width:</label>
+                  <input type='text' id='bmp_width' class='dialog_text_input input_narrow'>
+              </fieldset>
+              <div class='menuitem' id='save_options'>Save</div>
+            </div>
+      </div>
 	  <div id='consol'></div>
   </div>
   <script src='js/gui.js' type='text/javascript'></script>

@@ -1,47 +1,28 @@
-const menu = () => {
-}
 
 const binFile = {
     opened: false,
     name: '',
     data: []
-    
 };
 
 const defaultOptions = {
     version: '0.5',
+    storageName: 'cutAsStore',
+    fileSizeLimit: 256,
     hexWidth: 40,
     bmpWidth: 320,
     consoleFontSize: 15,
 }
 
-const options = defaultOptions;
-
+let options = {};
 const undos = [];
+const redos = [];
 
 const selection = {
     isSelected: false,
     start: null,
     end: null,
     singleSelected: null,
-}
-
-const cout = (txt) => {
-    $('#consol').append(`${txt}<br>`);
-    $('#consol')[0].scrollTop = $('#consol')[0].scrollHeight;
-}
-
-const cin = (txt) => {
-    $('#consol').append(`${txt}<br>`);
-    $('#consol')[0].scrollTop = $('#consol')[0].scrollHeight;
-    
-    return 1000
-}
-
-const cclear = () => {
-    $('#consol').empty();
-    cout(`*** CutAs v.${options.version} - simple binary data manipulation tool.`);
-    cout(`*** author: bocianu@gmail.com`);
 }
 
 function decimalToHex(d, padding) {
@@ -53,6 +34,53 @@ function decimalToHex(d, padding) {
     }
 
     return hex;
+}
+
+const getSize = () => {
+    return `size: ${binFile.data.length} ($${decimalToHex(binFile.data.length)}) bytes`
+};
+
+
+const userIntParse = (udata) => {
+    if (_.isNull(udata)) return null;
+    udata = _.trim(udata);
+    if (_.startsWith(udata,'$')) {
+        udata = parseInt(_.trim(udata,'$'), 16);
+    } else {
+        udata = parseInt(udata, 10);
+    }
+    if (!_.isNaN(udata)) {
+        return udata
+    } else {
+        return NaN; 
+    }
+}
+
+const promptInt = (txt,defaulttxt) => {
+    let uint;
+    do {
+        const uval = prompt(txt, defaulttxt);
+        uint = userIntParse(uval);
+        if (_.isNaN(uint)) alert(`*** ERROR: can not parse integer value from ${uval}`);
+    } while (_.isNaN(uint))
+    return uint;
+}
+
+
+
+
+
+// *************************************************  CONSOLE DISPLAY
+
+const cout = (txt) => {
+    $('#consol').append(`${txt}<br>`);
+    $('#consol')[0].scrollTop = $('#consol')[0].scrollHeight;
+}
+
+const cclear = () => {
+    $('#consol').empty();
+    cout(`*** CutAs v.${options.version} - simple binary data manipulation tool.`);
+    cout(`*** author: bocianu@gmail.com`);
 }
 
 const showHex = () => {
@@ -88,9 +116,15 @@ const showInfo = () => {
     cout(`File ${getSize()}`);
 }
 
-const getSize = () => {
-    return `size: ${binFile.data.length} ($${decimalToHex(binFile.data.length)}) bytes`
-};
+
+
+
+
+
+
+
+
+//******************************************* FILE OPERATIONS
 
 const openFile = function(event) {
     var input = event.target;
@@ -99,6 +133,10 @@ const openFile = function(event) {
     reader.onload = function(){
         var arrayBuffer = reader.result;
         //console.log(input.files[0]);
+        if (input.files[0].size > (options.fileSizeLimit * 1024)) {
+            cout(`*** ERROR: File too big! Size limit exceeded. File size: ${input.files[0].size} B - limit: ${options.fileSizeLimit} kB`);
+            return false;
+        }
         binFile.name = input.files[0].name;
         binFile.opened = true;
         binFile.data = new Uint8Array(arrayBuffer);
@@ -142,32 +180,16 @@ const saveFile = (data, name) => {
     }
 }
 
-const userIntParse = (udata) => {
-    if (_.isNull(udata)) return null;
-    udata = _.trim(udata);
-    if (_.startsWith(udata,'$')) {
-        udata = parseInt(_.trim(udata,'$'), 16);
-    } else {
-        udata = parseInt(udata, 10);
-    }
-    if (!_.isNaN(udata)) {
-        return udata
-    } else {
-        return NaN; 
-    }
+const exportData = () => {
+    cout('*** Not implemented yet');
 }
 
-const promptInt = (txt,defaulttxt) => {
-    let uint;
-    do {
-        const uval = prompt(txt, defaulttxt);
-        uint = userIntParse(uval);
-        if (_.isNaN(uint)) alert(`*** ERROR: can not parse integer value from ${uval}`);
-    } while (_.isNaN(uint))
-    return uint;
-}
+
+
+// ******************************************* DATA SLICING
 
 const sliceData = (dstart = null, dstop=null) => {
+
     if (binFile.data.length == 0) return null;
     if (!_.isNumber(dstart)) {
         dstart = promptInt('first byte address:',0);
@@ -234,8 +256,14 @@ const splitData = (dsize = null) => {
         if (_.isNull(dsize)) return null;
     }
     if (!_.isNull(dsize)) {
+        if (dsize <= 0) return null;
         const fcount = Math.ceil(binFile.data.length / dsize);
+        if (fcount > 9) {
+            const sure = confirm(`It will produce ${fcount} files!\nAre you sure you want to proceed??`);
+            if (!sure) return null;
+        }
         const fname = prompt('set name for saved files:', binFile.name.split('.')[0]);
+        if (_.isNull(fname)) return null;
         let fnum = 0;
         while (fnum < fcount) {
             const foffset = fnum * dsize;
@@ -253,9 +281,8 @@ const splitData = (dsize = null) => {
     return null;
 }
 
-const exportData = () => {
-    cout('*** Not implemented yet');
-}
+// ******************************************* DATA MODIFIERS
+
 
 const dataNegate = () => {
     if (binFile.data.length == 0) return null;
@@ -351,23 +378,77 @@ const packRLE = () => {
     return 1;
 }
 
+
+
+
+// *********************************** OPTIONS
+
 const refreshOptions = () => {
-    
+    $('#hex_width').val(options.hexWidth);
+    $('#bmp_width').val(options.bmpWidth);
+    $('#size_limit').val(options.fileSizeLimit);
+}
+
+const valIntInput = (inputId) => {
+    uint = userIntParse($(`#${inputId}`).val());
+    if (_.isNaN(uint)) {
+        $(`#${inputId}`).addClass('warn').focus();
+        return false;
+    };
+    $(`#${inputId}`).val(uint);
+    return true;
+}
+
+const validateOptions = () => {
+    $('.dialog_text_input').removeClass('warn');
+    if (!valIntInput('hex_width')) return false;
+    if (!valIntInput('bmp_width')) return false;
+    if (!valIntInput('size_limit')) return false;
+    return true;
 }
 
 const toggleOptions = () => {
     if ($('#options_dialog').is(':visible')) {
         $('#options_dialog').slideUp();
     } else {
+        refreshOptions();
         $('#options_dialog').slideDown();
     }
 }
+
+const storeOptions = () => {
+    localStorage.setItem(defaultOptions.storageName,JSON.stringify(options));
+}
+
+const loadOptions = () => {
+    if(!localStorage.getItem(defaultOptions.storageName)) {
+        options = _.assignIn({}, defaultOptions);
+        storeOptions();
+    } else {
+        options = _.assignIn({}, defaultOptions, JSON.parse(localStorage.getItem(defaultOptions.storageName)));
+    }
+}
+
+const saveOptions = () => {
+    if (validateOptions()) {
+        _.assignIn(options, {
+            hexWidth: Number($('#hex_width').val()),
+            bmpWidth: Number($('#bmp_width').val()),
+            fileSizeLimit: Number($('#size_limit').val())
+        });
+        storeOptions();
+        toggleOptions();
+    }
+}
+
+// *********************************** OPTIONS
 
 const saveUndo = (name, modifier) => {
     return () => {
         const undo = { name: name, data: binFile.data.slice() };
         const result = modifier();
         if (!_.isNull(result)) {
+            _.remove(redos, _.stubTrue);
             undos.push(undo);
         }
     }
@@ -376,6 +457,8 @@ const saveUndo = (name, modifier) => {
 const undo = () => {
     if (undos.length>0) {
         const undo = undos.pop();
+        const redo = { name: undo.name, data: binFile.data.slice() };
+        redos.push(redo);
         binFile.data = undo.data.slice();
         cout(`*** Undo - ${undo.name} reverted`);
     } else {
@@ -383,7 +466,23 @@ const undo = () => {
     }
 }
 
+const redo = () => {
+    if (redos.length>0) {
+        const redo = redos.pop();
+        const undo = { name: redo.name, data: binFile.data.slice() };
+        undos.push(undo);
+        binFile.data = redo.data.slice();
+        cout(`*** Redo - ${undo.name} restored`);
+    } else {
+        cout(`*** Can't Redo`);
+    }
+}
+
+
+// ************************************************  ON START INIT 
+
 $(document).ready(function() {
+    loadOptions();
 	const app = gui(options);
     cclear();
  	app.addMenuItem('Save File', () => {
@@ -416,6 +515,7 @@ $(document).ready(function() {
  	app.addMenuItem('Clear View', cclear);
     app.addSeparator();
  	app.addMenuItem('Undo', undo);
+ 	app.addMenuItem('Redo', redo);
     app.fitSize();
     
 });

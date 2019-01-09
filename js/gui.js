@@ -14,6 +14,7 @@ const gui = (options) => {
     $(window).resize(fitSize);
     $('#file').change(openFile);
     $('#afile').change(appendFile);
+    $('#save_options').click(saveOptions);
 
 	$('<ul/>').attr('id','menulist').addClass('menulist').appendTo('#menu');
 

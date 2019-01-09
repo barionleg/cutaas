@@ -121,14 +121,14 @@ body {
     box-shadow: 0 0 4px #000;
     border: 2px solid #000;
     overflow:hidden;
-    font-size:14px;
+    font-size:12px;
 }
 
 .dialog_title {
     position:relative;
     width:100%;
-    background:#333;
-    color:#aaa;
+    background:#454;
+    color:#aba;
     text-align: center;
     margin-bottom:5px;
     padding:3px;
@@ -140,13 +140,14 @@ body {
 }
 
 .dialog_label {
+    padding-top:4px;
     display:block;
     float: left;
-    width: 140px;
+    width: 120px;
 }
 
-fieldset {
-  margin-bottom:10px;
+fieldset, hr {
+  margin-bottom:4px;
 }
 
 .dialog_text_input {
@@ -156,4 +157,13 @@ fieldset {
 
 .input_narrow {
     width: 40px;
+}
+
+.warn {
+ background-color:#fee;
+}
+
+hr {
+    border-bottom: 1px dotted #000;
+    width:100%;
 }

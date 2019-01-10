@@ -6,18 +6,17 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.7',
-    storageName: 'cutAsStore',
+    version: '0.8',
+    storageName: 'cutasStore',
     fileSizeLimit: 256,
     hexWidth: 40,
     bmpWidth: 40,
     bmpScale: 2,
     consoleFontSize: 15,
-    bytesPerLine: 32,
+    bytesPerLine: 16,
     lastTemplate: 0
 }
 const dontSave = ['version','storageName'];
-
 
 let options = {};
 const undos = [];

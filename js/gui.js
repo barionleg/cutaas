@@ -4,10 +4,10 @@ const gui = (options) => {
         const cpos = $('#consol').offset();
         $('#consol')
             .css('height', $('body').height() - cpos.top)
-            .css('width', $('body').width() - 25)
+            .css('width', $('body').width() - 30)
             .css('font-size',`${options.consoleFontSize}`);
         $('.menulist')
-            .css('width', $('body').width() - 25)
+            .css('width', $('body').width() - 30)
         //console.log(cpos);
     }
     
@@ -15,6 +15,8 @@ const gui = (options) => {
     $('#file').change(openFile);
     $('#afile').change(appendFile);
     $('#save_options').click(saveOptions);
+    $('#save_export').click(exportData);
+    $('#bytes_per_line').change(updateAfterEdit);
 
 	$('<ul/>').attr('id','menulist').addClass('menulist').appendTo('#menu');
 

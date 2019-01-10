@@ -101,19 +101,20 @@ body {
 
 #consol {
     font-family: monospace;
-    padding: 5px 2px;
+    padding: 5px 5px;
     background-color: #030;
     color: #0b0;
     width:80%;
     overflow: auto;
     min-height: 200px;
     min-width: 800px;
+    background-image: url('cutas.png');
+    background-position: top right;
+    background-repeat: no-repeat;
 }
 
 .dialog {
     position:absolute;
-    top: 40px;
-    left:650px;
     display:none;
     background:#aba;
     color:#000;
@@ -123,6 +124,18 @@ body {
     overflow:hidden;
     font-size:12px;
 }
+
+#options_dialog {
+    top: 40px;
+    left:450px;
+}
+
+#export_dialog {
+    top: 40px;
+    left:250px;
+}
+
+
 
 .dialog_title {
     position:relative;
@@ -155,8 +168,28 @@ fieldset, hr {
     padding:2px;
 }
 
+
+.dialog_block {
+    display: block;
+    float: left;
+}
+
+.dialog_block:not(:last-child) {
+    margin-right:10px;
+    padding-right:10px;
+    border-right:1px solid #454;
+}
+
+.clear_left {
+    clear:left;
+}
+
 .input_narrow {
     width: 40px;
+}
+
+.input_narrows {
+    width: 50px;
 }
 
 .warn {
@@ -164,6 +197,10 @@ fieldset, hr {
 }
 
 hr {
-    border-bottom: 1px dotted #000;
+    border-bottom: 1px dotted #787;
     width:100%;
+}
+
+.bmp_view {
+    background-color:#020;
 }

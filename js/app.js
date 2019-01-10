@@ -6,13 +6,18 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.5',
+    version: '0.7',
     storageName: 'cutAsStore',
     fileSizeLimit: 256,
     hexWidth: 40,
-    bmpWidth: 320,
+    bmpWidth: 40,
+    bmpScale: 2,
     consoleFontSize: 15,
+    bytesPerLine: 32,
+    lastTemplate: 0
 }
+const dontSave = ['version','storageName'];
+
 
 let options = {};
 const undos = [];
@@ -72,6 +77,10 @@ const promptInt = (txt,defaulttxt) => {
 
 // *************************************************  CONSOLE DISPLAY
 
+const setTheme = (theme) => {
+    $('#consol').css('font-size',theme.consoleFontSize);
+}
+
 const cout = (txt) => {
     $('#consol').append(`${txt}<br>`);
     $('#consol')[0].scrollTop = $('#consol')[0].scrollHeight;
@@ -99,6 +108,37 @@ const showHex = () => {
     // console.log(hex);
     cout(hex);
     return hex;
+}
+
+const showBMP = () => {
+    if (binFile.data.length == 0) return null;
+    cout('*** Bitmap wiew:');
+    const width = options.bmpWidth * 8 * options.bmpScale;
+    const height = Math.ceil(binFile.data.length / options.bmpWidth) * options.bmpScale; 
+    const bmp =  $('<canvas/>',{'class':'bmp_view'}).width(width).height(height);
+    const ctx = bmp[0].getContext("2d");
+    ctx.canvas.width = width;
+    ctx.canvas.height = height;
+    let x,y,bit;
+    let byteOffset=0;
+    ctx.fillStyle = "#0b0";
+    for(y=0;y<height;y++) {
+        for(x=0;x<options.bmpWidth;x++) {
+            const bbyte = binFile.data[byteOffset];
+            let bx = 0;
+            for (bit=7;bit>=0;bit--) {
+                const mask = 1 << bit;
+                if ((bbyte & mask) != 0) {
+                    ctx.fillRect( x*8*options.bmpScale+bx, y*options.bmpScale, options.bmpScale, options.bmpScale );
+                }
+                bx+=options.bmpScale;
+            }
+            byteOffset++;
+            if (byteOffset>binFile.data.length) break;
+        }
+    }
+    $('#consol').append(bmp,'<br>');
+    $('#consol')[0].scrollTop = $('#consol')[0].scrollHeight;
 }
 
 const showText = () => {
@@ -178,10 +218,6 @@ const saveFile = (data, name) => {
             setTimeout(() => {$(a).remove();}, 0); 
         }
     }
-}
-
-const exportData = () => {
-    cout('*** Not implemented yet');
 }
 
 
@@ -386,6 +422,8 @@ const packRLE = () => {
 const refreshOptions = () => {
     $('#hex_width').val(options.hexWidth);
     $('#bmp_width').val(options.bmpWidth);
+    $('#bmp_scale').val(options.bmpScale);
+    $('#font_size').val(options.consoleFontSize);
     $('#size_limit').val(options.fileSizeLimit);
 }
 
@@ -404,6 +442,8 @@ const validateOptions = () => {
     if (!valIntInput('hex_width')) return false;
     if (!valIntInput('bmp_width')) return false;
     if (!valIntInput('size_limit')) return false;
+    if (!valIntInput('font_size')) return false;
+    
     return true;
 }
 
@@ -417,7 +457,7 @@ const toggleOptions = () => {
 }
 
 const storeOptions = () => {
-    localStorage.setItem(defaultOptions.storageName,JSON.stringify(options));
+    localStorage.setItem(defaultOptions.storageName,JSON.stringify(_.omit(options,dontSave)));
 }
 
 const loadOptions = () => {
@@ -429,19 +469,119 @@ const loadOptions = () => {
     }
 }
 
+const updateOptions = () => {
+    _.assignIn(options, {
+        hexWidth: Number($('#hex_width').val()),
+        bmpWidth: Number($('#bmp_width').val()),
+        bmpScale: Number($('#bmp_scale').val()),
+        consoleFontSize: Number($('#font_size').val()),
+        fileSizeLimit: Number($('#size_limit').val()),
+        bytesPerLine: Number($('#bytes_per_line').val()),
+        lastTemplate: Number($('#export_template').val()),
+    });
+    storeOptions();
+}
+
+
 const saveOptions = () => {
     if (validateOptions()) {
-        _.assignIn(options, {
-            hexWidth: Number($('#hex_width').val()),
-            bmpWidth: Number($('#bmp_width').val()),
-            fileSizeLimit: Number($('#size_limit').val())
-        });
-        storeOptions();
+        updateOptions();
         toggleOptions();
+        setTheme(options);
+        cout(`*** Options updated`);
     }
 }
 
-// *********************************** OPTIONS
+// *********************************** EXPORT
+
+const refreshExports = () => {
+    $('#bytes_per_line').val(options.bytesPerLine);
+    $('#export_template').empty();
+    for (let templateIdx in exportTemplates) {
+        const template = exportTemplates[templateIdx];
+        const option = $('<option/>').val(templateIdx).html(template.name);
+        $('#export_template').append(option);
+    };
+    $('#export_template').val(options.lastTemplate);
+    //
+}
+
+const validateExport = () => valIntInput('bytes_per_line');
+
+const updateAfterEdit = () => {
+    if (validateExport()) {
+        updateOptions();
+    }
+}
+
+const toggleExport = () => {
+    if ($('#export_dialog').is(':visible')) {
+        $('#export_dialog').slideUp();
+    } else {
+        refreshExports();
+        $('#export_dialog').slideDown();
+    }
+}
+
+const exportData = () => {
+    if (binFile.data.length == 0) return null;
+    const deselect = () => {
+    if (document.selection) document.selection.empty();
+		else if (window.getSelection)
+                window.getSelection().removeAllRanges();
+    }
+    updateOptions();
+    toggleExport();
+    cout(`*** Start of exported data:`);
+    const body = parseTemplate($('#export_template').val());
+    const block = $(`<pre>${body}</pre>`);
+    $('#consol').append(block);
+    deselect();
+    if (document.selection) {
+    	var range = document.body.createTextRange();
+ 	        range.moveToElementText(block[0]);
+		range.select();
+		}
+    else if (window.getSelection) {
+		var range = document.createRange();
+		range.selectNode(block[0]);
+		window.getSelection().addRange(range);
+    }
+    document.execCommand('copy');
+    deselect();
+    cout(`*** End of exported data`);
+    cout(`*** Text copied to clipboard, paste it anywhere else`);
+}
+
+
+const parseTemplateVars = (template, size) => {
+    return template
+        .replace(/#size#/g, size)
+        .replace(/#max#/g, size-1);
+}
+
+const parseTemplate = (templateIdx) => {
+    const template = exportTemplates[templateIdx];
+    let templateLines = '';
+    const linesCount = Math.ceil( binFile.data.length / options.bytesPerLine);
+    for (let line = 0;line < linesCount;line++) {
+        let lineBody = '';
+        if (template.line.numbers) {
+            lineBody += `${template.line.numbers.start + template.line.numbers.step * line} `;
+        }
+        const dataOffset = line*options.bytesPerLine;
+        const lineData = _.join(_.map(_.slice(binFile.data, dataOffset , dataOffset+options.bytesPerLine), 
+            b => `${template.byte.prefix}${template.byte.hex?decimalToHex(b,2):b}${template.byte.postfix}`
+        ),template.byte.separator);
+        const linePostfix = (line == linesCount-1) ? template.line.lastpostfix || template.line.postfix : template.line.postfix;
+        lineBody += `${template.line.prefix}${lineData}${linePostfix}`;
+        templateLines += lineBody;
+    }
+    return parseTemplateVars(`${template.block.prefix}${templateLines}${template.block.postfix}`,binFile.data.length);
+}
+
+
+// *********************************** UNDO
 
 const saveUndo = (name, modifier) => {
     return () => {
@@ -484,6 +624,10 @@ const redo = () => {
 $(document).ready(function() {
     loadOptions();
 	const app = gui(options);
+    setTheme(options);
+    refreshExports();
+    refreshOptions();
+    $('title').append(` v.${options.version}`);
     cclear();
  	app.addMenuItem('Save File', () => {
         if (binFile.opened) {
@@ -492,7 +636,7 @@ $(document).ready(function() {
         }
     }
     , 'filemenu');
- 	app.addMenuItem('Export', exportData, 'filemenu');
+ 	app.addMenuItem('Export', toggleExport, 'filemenu');
     app.addSeparator('filemenu');
  	app.addMenuItem('Split', splitData, 'filemenu');
  	app.addMenuItem('Slice', saveUndo('data slice', sliceData), 'filemenu');
@@ -511,6 +655,7 @@ $(document).ready(function() {
 	app.addMenuItem('Show Info', showInfo);
  	app.addMenuItem('Show Hex', showHex);
  	app.addMenuItem('Show Text', showText);
+ 	app.addMenuItem('Show Bitmap', showBMP);
     app.addSeparator();
  	app.addMenuItem('Clear View', cclear);
     app.addSeparator();

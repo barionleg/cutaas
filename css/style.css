@@ -18,19 +18,15 @@ body {
   color:#ccc;
   font-family: Arial, sans-serif;
   margin:10px 10px;
-  width: 100%;
 }
 
-#menu {
-  width: 100%;
-  overflow:auto;
-}
 
 .menulist {
   display: block;
   overflow: auto;
   margin-bottom: 6px;
   border-bottom: 1px dotted #666;
+  width: 100%;
 }
 
 #main {
@@ -63,10 +59,10 @@ body {
   display: block;
   float: left;
   width: 0px;
-  height:1em;
-  margin: 2px 5px 0 0;
+  height:16px;
+  margin: 2px 7px 0 2px;
   border-left: 1px solid #666;
-  border-right: 1px solid #888;
+  border-right: 1px dotted #888;
 }
 
 .menubr {

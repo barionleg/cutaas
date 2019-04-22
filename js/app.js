@@ -649,29 +649,29 @@ $(document).ready(function () {
     app.addMenuItem('Save File', saveFile, 'filemenu', 'Saves current data into new file');
     app.addMenuItem('Export', toggleExport, 'filemenu', 'Exports current data in popular programming languages formats');
     app.addSeparator('filemenu');
-    app.addMenuItem('Split', splitData, 'filemenu', 'Splits current data into n data chunks with specified size').addClass('icon icon_split');
-    app.addMenuItem('Slice', saveUndo('data slice', sliceData), 'filemenu', 'Keeps only slice of current data from->to specified offset').addClass('icon icon_slice');
-    app.addMenuItem('Cut Off', saveUndo('data cut off', cutOffData), 'filemenu', 'Cuts off (removes) specified range of bytes form current data').addClass('icon icon_cutoff');
+    app.addMenuItem('Undo', undo, 'filemenu', 'Undo last operation');
+    app.addMenuItem('Redo', redo, 'filemenu', 'Redo last operation');
+
     app.addSeparator('filemenu');
     app.addMenuItem('pack RLE', saveUndo('RLE compression', packRLE), 'filemenu', 'Packs current data using RLE algorithm');
     app.addSeparator('filemenu');
     app.addMenuItem('Options', toggleOptions, 'filemenu');
 
-    app.addMenuItem('Negate', saveUndo('data negation', dataNegate), undefined, 'Negates all bytes of current data');
-    app.addMenuItem('XOR', saveUndo('data XOR operation', dataXOR), undefined, 'Performs binary XOR with provided value on all bytes of current data');
-    app.addMenuItem('OR', saveUndo('data OR operation', dataOR), undefined, 'Performs binary OR with provided value on all bytes of current data');
-    app.addMenuItem('AND', saveUndo('data AND operation', dataAND), undefined, 'Performs binary AND with provided value on all bytes of current data');
-    app.addMenuItem('Offset', saveUndo('data offseting', dataOffset), undefined, 'Offsets all bytes of current data by provided value');
-    app.addBR();
-    app.addMenuItem('Show Info', showInfo, undefined, 'Shows brief info about current data set');
-    app.addMenuItem('Show Hex', showHex, undefined, 'Shows hexadecimal dump of current data set');
-    app.addMenuItem('Show Text', showText, undefined, 'Shows current data set as an text data');
-    app.addMenuItem('Show Bitmap', showBMP, undefined, 'Shows current data set as bitmap');
-    app.addSeparator();
-    app.addMenuItem('Clear View', cclear, undefined, 'Clears terminal window');
-    app.addSeparator();
-    app.addMenuItem('Undo', undo, undefined, 'Undo last operation');
-    app.addMenuItem('Redo', redo, undefined, 'Redo last operation');
+    app.addMenuItem('Split', splitData, 'datamenu', 'Splits current data into n data chunks with specified size').addClass('icon icon_split');
+    app.addMenuItem('Slice', saveUndo('data slice', sliceData), 'datamenu', 'Keeps only slice of current data from->to specified offset').addClass('icon icon_slice');
+    app.addMenuItem('Cut Off', saveUndo('data cut off', cutOffData), 'datamenu', 'Cuts off (removes) specified range of bytes form current data').addClass('icon icon_cutoff');
+    app.addSeparator('datamenu');
+    app.addMenuItem('Negate', saveUndo('data negation', dataNegate), 'datamenu', 'Negates all bytes of current data');
+    app.addMenuItem('XOR', saveUndo('data XOR operation', dataXOR), 'datamenu', 'Performs binary XOR with provided value on all bytes of current data');
+    app.addMenuItem('OR', saveUndo('data OR operation', dataOR), 'datamenu', 'Performs binary OR with provided value on all bytes of current data');
+    app.addMenuItem('AND', saveUndo('data AND operation', dataAND), 'datamenu', 'Performs binary AND with provided value on all bytes of current data');
+    app.addMenuItem('Offset', saveUndo('data offseting', dataOffset), 'datamenu', 'Adds provided offset value to all bytes of current data');
+    app.addMenuItem('Show Info', showInfo, 'viewmenu', 'Shows brief info about current data set');
+    app.addMenuItem('Show Hex', showHex, 'viewmenu', 'Shows hexadecimal dump of current data set');
+    app.addMenuItem('Show Text', showText, 'viewmenu', 'Shows current data set as an text data');
+    app.addMenuItem('Show Bitmap', showBMP, 'viewmenu', 'Shows current data set as bitmap');
+    app.addSeparator('viewmenu');
+    app.addMenuItem('Clear View', cclear, 'viewmenu', 'Clears terminal window');
     app.fitSize();
 
 });

@@ -2,13 +2,12 @@ const gui = (options) => {
 
     const fitSize = () => {
         const cpos = $('#consol').offset();
+        $('#app').css('width', $('body').width());
         $('#consol')
-            .css('height', $('body').height() - cpos.top)
-            .css('width', $('body').width() - 30)
+            .css('height', window.innerHeight - cpos.top - 20)
+            .css('width', $('body').width() - 10)
             .css('font-size', `${options.consoleFontSize}`);
-        $('.menulist')
-            .css('width', $('body').width() - 30)
-        //console.log(cpos);
+        //console.log(window.innerHeight);
     }
 
     let fileDialogs = 0;
@@ -18,7 +17,6 @@ const gui = (options) => {
     $('#save_export').click(exportData);
     $('#bytes_per_line').change(updateAfterEdit);
 
-    $('<ul/>').attr('id', 'menulist').addClass('menulist').appendTo('#menu');
 
     const addMenuItem = (name, handler, parent = 'menulist', hint) => {
         const li = $('<li/>').html(name).addClass('menuitem').bind('click', handler);

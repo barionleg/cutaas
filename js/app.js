@@ -6,13 +6,13 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.9',
-    storageName: 'cutasStore',
+    version: '0.92',
+    storageName: 'cutasStore092',
     fileSizeLimit: 256,
-    hexWidth: 40,
+    hexWidth: 20,
     bmpWidth: 40,
     bmpScale: 2,
-    consoleFontSize: 15,
+    consoleFontSize: 16,
     bytesPerLine: 16,
     lastTemplate: 0
 }
@@ -649,9 +649,9 @@ $(document).ready(function () {
     app.addMenuItem('Save File', saveFile, 'filemenu', 'Saves current data into new file');
     app.addMenuItem('Export', toggleExport, 'filemenu', 'Exports current data in popular programming languages formats');
     app.addSeparator('filemenu');
-    app.addMenuItem('Split', splitData, 'filemenu', 'Splits current data into n data chunks with specified size');
-    app.addMenuItem('Slice', saveUndo('data slice', sliceData), 'filemenu', 'Keeps only slice of current data from->to specified offset');
-    app.addMenuItem('Cut Off', saveUndo('data cut off', cutOffData), 'filemenu', 'Cuts off (removes) specified range of bytes form current data');
+    app.addMenuItem('Split', splitData, 'filemenu', 'Splits current data into n data chunks with specified size').addClass('icon icon_split');
+    app.addMenuItem('Slice', saveUndo('data slice', sliceData), 'filemenu', 'Keeps only slice of current data from->to specified offset').addClass('icon icon_slice');
+    app.addMenuItem('Cut Off', saveUndo('data cut off', cutOffData), 'filemenu', 'Cuts off (removes) specified range of bytes form current data').addClass('icon icon_cutoff');
     app.addSeparator('filemenu');
     app.addMenuItem('pack RLE', saveUndo('RLE compression', packRLE), 'filemenu', 'Packs current data using RLE algorithm');
     app.addSeparator('filemenu');

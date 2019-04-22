@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'atari8';
+  src: url('eightbit_atari-regular-webfont.woff2') format('woff2'),
+       url('eightbit_atari-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -31,9 +40,9 @@ body {
 .menuitem {
   display: block;
   float: left;
-  padding: 2px 20px;
+  padding: 2px 6px;
   background-color: #aaa;
-  color: #000;
+  color: #222  !important;
   cursor: pointer;
   margin-right: 5px;
   border-top: 1px solid #ccc;
@@ -41,9 +50,13 @@ body {
   border-right: 1px solid #666;
   border-bottom: 1px solid #666;
   border-radius: 4px;
-  text-shadow: 1px 1px 0px #ccc;
+  text-shadow:  1px 1px 0px #ccc;
   font-size: 14px;
+  height: 15px;
+  line-height: 1em;
   margin-bottom: 6px;
+  font-family: Arial, helvetica, sans-serif;
+  font-weight: bold;
 }
 
 .menuseparator {
@@ -111,6 +124,11 @@ body {
     background-image: url('cutas.png');
     background-position: top right;
     background-repeat: no-repeat;
+    font-family: atari8, monospace;
+}
+
+pre {
+  font-family: atari8, monospace;
 }
 
 .dialog {
@@ -204,3 +222,22 @@ hr {
 .bmp_view {
     background-color:#020;
 }
+
+.icon {
+  background-repeat: no-repeat;
+  background-position: 5px 3px;
+  padding-left: 24px;
+}
+
+.icon_split {
+  background-image: url(split.png);
+}
+
+.icon_slice {
+  background-image: url(slice.png);
+}
+
+.icon_cutoff {
+  background-image: url(cutoff.png);
+}
+

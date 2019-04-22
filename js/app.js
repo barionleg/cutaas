@@ -658,10 +658,10 @@ $(document).ready(function () {
     app.addMenuItem('Options', toggleOptions, 'filemenu');
 
     app.addMenuItem('Negate', saveUndo('data negation', dataNegate), undefined, 'Negates all bytes of current data');
-    app.addMenuItem('XOR', saveUndo('data XOR operation', dataXOR, undefined, 'Performs binary XOR with provided value on all bytes of current data'));
-    app.addMenuItem('OR', saveUndo('data OR operation', dataOR, undefined, 'Performs binary OR with provided value on all bytes of current data'));
-    app.addMenuItem('AND', saveUndo('data AND operation', dataAND, undefined, 'Performs binary AND with provided value on all bytes of current data'));
-    app.addMenuItem('Offset', saveUndo('data offseting', dataOffset, undefined, 'Offsets all bytes of current data by provided value'));
+    app.addMenuItem('XOR', saveUndo('data XOR operation', dataXOR), undefined, 'Performs binary XOR with provided value on all bytes of current data');
+    app.addMenuItem('OR', saveUndo('data OR operation', dataOR), undefined, 'Performs binary OR with provided value on all bytes of current data');
+    app.addMenuItem('AND', saveUndo('data AND operation', dataAND), undefined, 'Performs binary AND with provided value on all bytes of current data');
+    app.addMenuItem('Offset', saveUndo('data offseting', dataOffset), undefined, 'Offsets all bytes of current data by provided value');
     app.addBR();
     app.addMenuItem('Show Info', showInfo, undefined, 'Shows brief info about current data set');
     app.addMenuItem('Show Hex', showHex, undefined, 'Shows hexadecimal dump of current data set');

@@ -5,7 +5,7 @@ const exportTemplates = [
     {
         name:'Mad-Pascal array',
         block: {
-            prefix: "var data = array [0..#max#] of byte = (\n", postfix: ");"
+            prefix: "var data: array [0..#max#] of byte = (\n", postfix: ");"
         },
         line: {
             numbers: false, prefix: '    ', postfix: ",\n", lastpostfix: "\n"

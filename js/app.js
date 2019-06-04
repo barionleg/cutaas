@@ -6,7 +6,7 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.92',
+    version: '0.93',
     storageName: 'cutasStore092',
     fileSizeLimit: 256,
     hexWidth: 20,
@@ -48,13 +48,21 @@ const getSize = () => {
 const userIntParse = (udata) => {
     if (_.isNull(udata)) return null;
     udata = _.trim(udata);
+    let sign = 1;
+    if (_.startsWith(udata, '-')) {
+        sign = -1;
+        udata = udata.slice(1);
+    }
     if (_.startsWith(udata, '$')) {
         udata = parseInt(_.trim(udata, '$'), 16);
     } else {
         udata = parseInt(udata, 10);
     }
     if (!_.isNaN(udata)) {
-        return udata
+        if (sign === -1) {
+            udata = binFile.data.length - udata;
+        } 
+        return udata;
     } else {
         return NaN;
     }
@@ -249,7 +257,7 @@ const sliceData = (dstart = null, dstop = null) => {
         }
     }
     if (!_.isNumber(dstop)) {
-        dstop = promptInt('last byte address:', binFile.data.length);
+        dstop = promptInt('last byte address:', binFile.data.length-1);
         if (_.isNull(dstop)) {
             return null;
         }
@@ -279,7 +287,7 @@ const cutOffData = (dstart = null, dstop = null) => {
         }
     }
     if (!_.isNumber(dstop)) {
-        dstop = promptInt('last byte address:', binFile.data.length);
+        dstop = promptInt('last byte address:', binFile.data.length-1);
         if (_.isNull(dstop)) {
             return null;
         }

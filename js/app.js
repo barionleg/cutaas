@@ -232,6 +232,7 @@ const saveFile = () => {
         
         if (binFile.data.length > 0) {
             var a = document.createElement('a');
+            document.body.appendChild(a);
             var file = new Blob([new Uint8Array(binFile.data)]);
             a.href = URL.createObjectURL(file);
             if (name) {

@@ -6,7 +6,7 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.93',
+    version: '0.94',
     storageName: 'cutasStore092',
     fileSizeLimit: 256,
     hexWidth: 20,
@@ -237,7 +237,7 @@ const saveFile = () => {
             if (name) {
                 a.download = name;
                 a.click();
-                setTimeout(() => { $(a).remove(); }, 0);
+                setTimeout(() => { $(a).remove(); }, 100);
             }
         }
     } else return null

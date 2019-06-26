@@ -237,3 +237,39 @@ hr {
   background-image: url(cutoff.png);
 }
 
+.hex_cell {
+  float: left;
+}
+
+.hex_cell_selected {
+  background-color: #0d0;
+  color: #030;
+  box-shadow: 0px 0px 1px #0d0;
+}
+
+.hex_cell_selected:hover {
+  background-color: #080!important;
+}
+
+.hex_value.new_cell:hover, .hex_prefix_cell.new_cell:hover {
+  background-color: #0b0;
+  color: #030;
+}
+
+.hex_separator {
+  width: 3px;
+  overflow: hidden;
+}
+
+.hex_line {
+  clear: both;
+  height: 1.2em;
+}
+
+.hex_line:hover .hex_prefix_cell {
+  color: #8f8;
+}
+
+.new_cell {
+  cursor: pointer;
+}

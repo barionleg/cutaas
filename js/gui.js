@@ -16,6 +16,7 @@ const gui = (options) => {
     $('#save_options').click(saveOptions);
     $('#save_export').click(exportData);
     $('#bytes_per_line').change(updateAfterEdit);
+    $('#consol').click(removeSelection);
 
 
     const addMenuItem = (name, handler, parent = 'menulist', hint) => {

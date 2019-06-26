@@ -8,7 +8,7 @@ const binFile = {
 const defaultOptions = {
     version: '0.97',
     storageName: 'cutasStore097',
-    fileSizeLimit: 256,
+    fileSizeLimit: 64,
     hexWidth: 20,
     bmpWidth: 40,
     bmpScale: 2,

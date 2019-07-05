@@ -6,7 +6,7 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.977',
+    version: '0.98',
     storageName: 'cutasStore097',
     fileSizeLimit: 64,
     hexWidth: 20,
@@ -114,7 +114,9 @@ const cscroll = () => {
 }
 
 const cout = (txt) => {
-    $('#consol').append(`${txt}<br>`);
+    const consol = document.getElementById('consol')
+    consol.appendChild(document.createTextNode(`${txt}`));
+    consol.appendChild(document.createElement("br"));
     cscroll();
 }
 const cappend = (item) => {
@@ -141,7 +143,9 @@ const showSelection = () => {
     };
     if (selection.firstSelectedRow || selection.isSelected) {
         for (let addr = selection.start; addr <= selection.end; addr++) {
-            $(`#cell_${addr}.new_cell`).addClass('hex_cell_selected');
+            document.getElementById(`cell_${addr}`).classList.add('hex_cell_selected');
+            //console.log(cell);
+            //$(`#cell_${addr}.new_cell`).addClass('hex_cell_selected');
         }
     }
 }
@@ -231,40 +235,52 @@ const rowClicked = (e) => {
 
 const disarmCells = () => {
     removeSelection();
-    $("div.new_cell").removeClass('new_cell').unbind('click');
+    $("div.new_cell").off().removeClass('new_cell').removeAttr('id');
 }
 
+let called = 0;
+
 const showHexCells = () => {
+    //var t0 = performance.now();
     if (binFile.data.length == 0) return null;
     cout(`*** File hex view:`);
     const data = binFile.data;
     let row = 0;
+    const consol = document.getElementById('consol') 
     disarmCells();
-    var cellseparator = () => $("<div/>").addClass('hex_cell hex_separator').html('&nbsp;');
     while (data.length > (row * options.hexWidth)) {
         const start = row * options.hexWidth;
-        const head = $("<div/>").addClass('hex_cell hex_prefix_cell new_cell')
-            .attr({ 'start': start, 'end': Math.min(start + options.hexWidth - 1, binFile.data.length - 1), title: `row: ${decimalToHex(start, 4)}` })
-            .html(`$${decimalToHex(start, 4)}:`);
-        const line = $("<div/>").addClass('hex_line');
-        line.append(head);
+        const head = document.createElement("div"); 
+        head.className = 'hex_cell hex_prefix_cell new_cell';
+        head.innerHTML = `$${decimalToHex(start, 4)}:`;
+        head.setAttribute('start', start);
+        head.setAttribute('end', Math.min(start + options.hexWidth - 1, binFile.data.length - 1));
+        head.setAttribute('title', `row: ${decimalToHex(start, 4)}`);
+        const line = document.createElement("div"); 
+        line.className = 'hex_line';
+        line.appendChild(head);
         let addr = start;
         _.each(_.slice(data, start, start + options.hexWidth), (v, k) => {
-            const cell = $("<div/>").addClass('hex_cell hex_value new_cell')
-                .attr({ id: `cell_${addr}`, hexoffset: addr, title: `address: ${decimalToHex(addr, 4)}` })
-                .html(`${decimalToHex(v)}`);
+            const cell = document.createElement("div");
+            cell.className = 'hex_cell hex_value new_cell';
+            //$("<div/>").addClass('hex_cell hex_value new_cell')
+            cell.setAttribute('id', `cell_${addr}`);
+            cell.setAttribute('hexoffset', addr);
+            cell.setAttribute('title', `address: ${decimalToHex(addr, 4)}`);
+            cell.innerHTML = `${decimalToHex(v)}`;
             addr++;
-            line.append(cellseparator(), cell);
-            //console.log(row);
-        });
-        cappend(line);
+            line.appendChild(cell);
+        }); 
+        consol.appendChild(line);        
+
+        
         row++;
     };
     $("div.hex_value.new_cell").click(cellClicked);
     $("div.hex_prefix_cell.new_cell").click(rowClicked);
-    // console.log(hex);
     cout('*** End of data.');
-    //return hex;
+    //var t1 = performance.now();
+    //cout("Took " + (t1 - t0) + " milliseconds.")
 }
 
 const showBMP = () => {

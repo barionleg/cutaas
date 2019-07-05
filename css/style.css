@@ -239,6 +239,7 @@ hr {
 
 .hex_cell {
   float: left;
+  margin-right: 3px;
 }
 
 .hex_cell_selected {

@@ -1,4 +1,4 @@
-const gui = (options) => {
+const gui = (options, dropHandler) => {
 
     const fitSize = () => {
         const cpos = $('#consol').offset();
@@ -17,6 +17,34 @@ const gui = (options) => {
     $('#save_export').click(exportData);
     $('#bytes_per_line').change(updateAfterEdit);
     $('#consol').click(removeSelection);
+
+
+    $('html').on("dragover", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+    });
+
+    $('html').on("dragleave", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    });
+
+    $('html').on("drop", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (event.originalEvent.dataTransfer.files) {
+            // Use DataTransferItemList interface to access the file(s)
+            for (var i = 0; i < event.originalEvent.dataTransfer.files.length; i++) {
+                // If dropped items aren't files, reject them
+                const file = event.originalEvent.dataTransfer.files[i];
+                if (confirm(`Load new file ${file.name}?`)) {
+                    dropHandler(file);
+                }
+            }
+        }
+
+    });
 
 
     const addMenuItem = (name, handler, parent = 'menulist', hint) => {

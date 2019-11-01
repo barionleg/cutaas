@@ -6,7 +6,7 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.98',
+    version: '0.99',
     storageName: 'cutasStore097',
     fileSizeLimit: 64,
     hexWidth: 20,
@@ -333,6 +333,26 @@ const showInfo = () => {
 
 
 //******************************************* FILE OPERATIONS
+
+const dropFile = function (file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+        var arrayBuffer = reader.result;
+        //console.log(input.files[0]);
+        if (file.size > (options.fileSizeLimit * 1024)) {
+            cout(`*** ERROR: File too big! Size limit exceeded. File size: ${file[0].size} B - limit: ${options.fileSizeLimit} kB`);
+            return false;
+        }
+        binFile.name = file.name;
+        binFile.opened = true;
+        binFile.data = new Uint8Array(arrayBuffer);
+        _.remove(undos, _.stubTrue);
+        cout(`*** File ${binFile.name} opened, ${getSize()}`);
+    };
+    reader.readAsArrayBuffer(file);
+    
+}
+
 
 const openFile = function (event) {
     var input = event.target;
@@ -867,7 +887,7 @@ const redo = () => {
 
 $(document).ready(function () {
     loadOptions();
-    const app = gui(options);
+    const app = gui(options, dropFile);
     setTheme(options);
     refreshExports();
     refreshOptions();

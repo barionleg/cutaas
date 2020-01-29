@@ -6,7 +6,7 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.99',
+    version: '0.992',
     storageName: 'cutasStore097',
     fileSizeLimit: 64,
     hexWidth: 20,
@@ -624,6 +624,55 @@ const dataReverse = () => {
     return 1;
 }
 
+/*
+procedure ExpandRLE(src: word; dest: word);
+var value, count:byte;
+begin
+    value := peek(src);
+    while value<>0 do begin
+        Inc(src);
+        count := (value shr 1) + 1;
+        if Odd(value) then begin // just repeat data
+            Move(pointer(src),pointer(dest),count);
+            Inc(src,count);
+        end else begin  // expand
+            FillChar(pointer(dest),count,peek(src));
+            Inc(src);
+        end;
+        Inc(dest,count);
+        value := peek(src);
+    end;
+end; 
+*/
+
+const unpackRLE = () => {
+    let oldSize = binFile.data.length;
+    if (oldSize == 0) return null;
+    let x=0;
+    let decompressedData = [];
+    while (x < oldSize) {
+        let value = binFile.data[x];
+        x++;
+        if (value == 0) break;
+        let vcount = (value >> 1) + 1;
+        if (value & 1) { // just repeat
+            decompressedData = decompressedData.concat(Array.from(binFile.data.slice(x, x + vcount)));
+            x += vcount;
+        } else { // expand
+            decompressedData = decompressedData.concat(_.times(vcount, _.constant(binFile.data[x])));
+            x++;
+        }
+    }
+    if (decompressedData.length == 0) {
+        cout(`*** Cannot decompress anything, maybe data was not RLE compressed??`);
+    }
+    binFile.data = new Uint8Array(decompressedData);
+    cout(`*** Data decompressed, old size: ${oldSize} ($${decimalToHex(oldSize, 4)}), new size: ${binFile.data.length} ($${decimalToHex(binFile.data.length, 4)})`);
+    if (binFile.data.length < oldSize) {
+        cout(`*** Probably something went wrong, or maybe data was not RLE compressed`);
+    }
+    return 1;
+}
 
 const packRLE = () => {
     let oldSize = binFile.data.length;
@@ -903,6 +952,7 @@ $(document).ready(function () {
 
     app.addSeparator('filemenu');
     app.addMenuItem('pack RLE', saveUndo('RLE compression', packRLE), 'filemenu', 'Packs current data using RLE algorithm');
+    app.addMenuItem('unpack RLE', saveUndo('RLE decompression', unpackRLE), 'filemenu', 'Decompress current data using RLE algorithm');
     app.addSeparator('filemenu');
     app.addMenuItem('Options', toggleOptions, 'filemenu');
 

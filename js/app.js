@@ -6,7 +6,7 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.992',
+    version: '0.993',
     storageName: 'cutasStore097',
     fileSizeLimit: 64,
     hexWidth: 20,

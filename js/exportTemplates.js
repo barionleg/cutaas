@@ -89,6 +89,21 @@ const exportTemplates = [
     },    
 
     {
+        name:'Assembler .BYTE',
+        block: {
+            prefix: 'data_label\n', postfix: ''
+        },
+        line: {
+            numbers: false,
+            prefix: '  .byte ', postfix: '\n'
+        },
+        byte: {
+            hex: true, separator: ', ',
+            prefix: '$', postfix: ''
+        }
+    },    
+
+    {
         name:'Raw hex data CSV',
         block: {
             prefix: '', postfix: ''

@@ -6,7 +6,7 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.993',
+    version: '0.994',
     storageName: 'cutasStore097',
     fileSizeLimit: 64,
     hexWidth: 20,
@@ -874,21 +874,42 @@ const parseTemplateVars = (template, size) => {
 const parseTemplate = (templateIdx) => {
     const template = exportTemplates[templateIdx];
     let templateLines = '';
-    const linesCount = Math.ceil(binFile.data.length / options.bytesPerLine);
+    let elemCount = Math.ceil(binFile.data.length / template.byte.valueSize);
+    const linesCount = Math.ceil(elemCount / options.bytesPerLine);
     for (let line = 0; line < linesCount; line++) {
         let lineBody = '';
         if (template.line.numbers) {
             lineBody += `${template.line.numbers.start + template.line.numbers.step * line} `;
         }
-        const dataOffset = line * options.bytesPerLine;
-        const lineData = _.join(_.map(_.slice(binFile.data, dataOffset, dataOffset + options.bytesPerLine),
-            b => `${template.byte.prefix}${template.byte.hex ? decimalToHex(b, 2) : b}${template.byte.postfix}`
+        const lineSize = options.bytesPerLine * template.byte.valueSize;
+        const dataOffset = line * lineSize;
+        const lineBytes = _.slice(binFile.data, dataOffset, dataOffset + lineSize);
+
+        const lineValues = [];
+        let i = 0;
+        const masks = [ 1, 0x100, 0x10000, 0x1000000 ];
+
+        while (i < lineBytes.length) {
+            let mul = 0;
+            let val = 0;
+            while (mul < template.byte.valueSize) {
+                b = (i < lineBytes.length) ? lineBytes[i] : 0;
+                val = val + (b * masks[mul]);
+                mul++;
+                i++;
+            }
+            lineValues.push(val);
+        }
+
+        const lineData = _.join(_.map(lineValues,
+            b => `${template.byte.prefix}${template.byte.hex ? decimalToHex(b, 2*template.byte.valueSize) : b}${template.byte.postfix}`
         ), template.byte.separator);
+        
         const linePostfix = (line == linesCount - 1) ? template.line.lastpostfix || template.line.postfix : template.line.postfix;
         lineBody += `${template.line.prefix}${lineData}${linePostfix}`;
         templateLines += lineBody;
     }
-    return parseTemplateVars(`${template.block.prefix}${templateLines}${template.block.postfix}`, binFile.data.length);
+    return parseTemplateVars(`${template.block.prefix}${templateLines}${template.block.postfix}`, elemCount);
 }
 
 

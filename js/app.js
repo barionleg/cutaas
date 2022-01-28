@@ -976,6 +976,10 @@ $(document).ready(function () {
     app.addMenuItem('unpack RLE', saveUndo('RLE decompression', unpackRLE), 'filemenu', 'Decompress current data using RLE algorithm');
     app.addSeparator('filemenu');
     app.addMenuItem('Options', toggleOptions, 'filemenu');
+    app.addSeparator('filemenu');
+
+    const bh = $('<div/>').attr('id','bathub').on('mousedown',()=>{window.location.href='https://bocianu.gitlab.io/bathub/'});
+    $('#filemenu').append(bh);
 
     app.addMenuItem('Split', splitData, 'datamenu', 'Splits current data into n data chunks with specified size').addClass('icon icon_split');
     app.addMenuItem('Slice', saveUndo('data slice', sliceData), 'datamenu', 'Keeps only slice of current data from->to specified offset').addClass('icon icon_slice');

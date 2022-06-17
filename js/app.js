@@ -6,7 +6,7 @@ const binFile = {
 };
 
 const defaultOptions = {
-    version: '0.994',
+    version: '0.998',
     storageName: 'cutasStore097',
     fileSizeLimit: 64,
     hexWidth: 20,
@@ -537,6 +537,14 @@ const splitData = (dsize = null) => {
 
 // ******************************************* DATA MODIFIERS
 
+const itoa = b => {
+    const u = b & 128;
+    const l = b & 127;
+    return u | (l >= 96 ? l : (l + 32) %96);
+}
+const atoi = b => {
+        return itoa(itoa(b));
+}
 
 const dataNegate = () => {
     if (binFile.data.length == 0) return null;
@@ -546,6 +554,32 @@ const dataNegate = () => {
     } else {
         binFile.data = new Uint8Array(_.map(binFile.data, (v) => ~v));
         cout('*** All data negated');
+    }
+    updateSelection();
+    return 1;
+}
+
+const dataI2A = () => {
+    if (binFile.data.length == 0) return null;
+    if (selection.isSelected || selection.firstSelectedRow) {
+        binFile.data = new Uint8Array(_.map(binFile.data, (v, i) => _.inRange(i, selection.start, selection.end + 1) ? itoa(v) : v));
+        cout('*** Selected range converted to ATASCII');
+    } else {
+        binFile.data = new Uint8Array(_.map(binFile.data, (v) => itoa(v)));
+        cout('*** All data converted to ATASCII');
+    }
+    updateSelection();
+    return 1;
+}
+
+const dataA2I = () => {
+    if (binFile.data.length == 0) return null;
+    if (selection.isSelected || selection.firstSelectedRow) {
+        binFile.data = new Uint8Array(_.map(binFile.data, (v, i) => _.inRange(i, selection.start, selection.end + 1) ? atoi(v) : v));
+        cout('*** Selected range converted to internal ANTIC');
+    } else {
+        binFile.data = new Uint8Array(_.map(binFile.data, (v) => atoi(v)));
+        cout('*** All data converted to internal ANTIC');
     }
     updateSelection();
     return 1;
@@ -991,6 +1025,11 @@ $(document).ready(function () {
     app.addMenuItem('AND', saveUndo('data AND operation', dataAND), 'datamenu', 'Performs binary AND with provided value on all bytes of current data');
     app.addMenuItem('Offset', saveUndo('data offseting', dataOffset), 'datamenu', 'Adds provided offset value to all bytes of current data');
     app.addMenuItem('Reverse', saveUndo('revert bytes', dataReverse), 'datamenu', 'Reverts order of bits in every byte of current data');
+    app.addSeparator('datamenu');
+    app.addMenuItem('A->I', saveUndo('atascii to internal', dataA2I), 'datamenu', 'Converts data from ATASCII codes to internal ANTIC codes');
+    app.addMenuItem('I->A', saveUndo('internal to atascii', dataI2A), 'datamenu', 'Converts data from internal ANTIC codes to ATASCII codes');
+    
+    
     app.addMenuItem('Show Info', showInfo, 'viewmenu', 'Shows brief info about current data set');
     app.addMenuItem('Show Hex', showHexCells, 'viewmenu', 'Shows hexadecimal dump of current data set');
     app.addMenuItem('Show Text', showText, 'viewmenu', 'Shows current data set as an text data');

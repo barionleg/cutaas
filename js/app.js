@@ -1012,7 +1012,7 @@ $(document).ready(function () {
     app.addMenuItem('Options', toggleOptions, 'filemenu');
     app.addSeparator('filemenu');
 
-    const bh = $('<div/>').attr('id','bathub').on('mousedown',()=>{window.location.href='https://bocianu.gitlab.io/bathub/'});
+    const bh = $('<div/>').attr('id','bathub').on('mousedown',()=>{window.location.href='https://barionleg.github.io/bathub/'});
     $('#filemenu').append(bh);
 
     app.addMenuItem('Split', splitData, 'datamenu', 'Splits current data into n data chunks with specified size').addClass('icon icon_split');
